@@ -1,0 +1,11 @@
+project: savantenvs/libretro-common
+target: cdfs
+duration: 1200
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/cdfs/testsuite
+cmds:
+  - cmd: /mayhem/test_cdfs @@
+    filepath: /input.cue
+    env:
+      MFUZZ_COMPAT_LEVEL: '1'
