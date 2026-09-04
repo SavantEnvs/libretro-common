@@ -51,6 +51,15 @@ COPY --chown=2000:2000 . /mayhem
 
 RUN bash mayhem/build.sh
 
+# Companion binary for the cdfs harness. The parser reaches its interesting
+# ISO-9660 branches only when the .cue's referenced FILE actually opens; the
+# seed cues live under mayhem/cdfs/testsuite/ and reference /data.bin, so bake
+# a minimal MODE1/2352-shaped image with the "CD001" descriptor at sector 16.
+USER root
+RUN python3 -c "d=bytearray(37664); d[37649:37654]=b'CD001'; open('/data.bin','wb').write(bytes(d))" \
+ && chown mayhem:mayhem /data.bin
+USER mayhem
+
 # Run the project's functional tests at build time IF the repo ships them (mayhem/test.sh is
 # optional — omit it only when the repo has no tests meaningful for RL). A failing suite fails the
 # image build, so the commit image is guaranteed to build AND pass its own tests.
